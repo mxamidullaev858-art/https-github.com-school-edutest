@@ -1,0 +1,7 @@
+/* App specific styles if needed */
+.app-container {
+  padding-top: 100px; /* Space for fixed navbar */
+  min-height: 100vh;
+  /* subtle gradient background */
+  background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000000 100%);
+}

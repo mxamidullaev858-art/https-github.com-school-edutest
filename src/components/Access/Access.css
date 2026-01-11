@@ -1,0 +1,173 @@
+.access-section {
+  position: relative;
+  padding: 80px 0 100px;
+  overflow: hidden;
+  text-align: center;
+  color: #fff;
+  min-height: 400px;
+}
+
+/* Blurred & Warm Overlay Background */
+.access-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Marketing Warmth: Orange/Dark Brown Tint + Image */
+  background: linear-gradient(rgba(44, 25, 10, 0.8), rgba(60, 30, 10, 0.7)), url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2070&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  filter: blur(4px); /* Blur effect as requested */
+  z-index: 0;
+  transform: scale(1.05); /* Prevent blur edges */
+}
+
+.access-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Text Content */
+.access-content {
+  flex: 1;
+  text-align: left;
+  max-width: 500px;
+  padding-left: 20px;
+}
+
+.access-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 25px;
+  line-height: 1.2;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.5); /* Better readability text shadow */
+}
+
+.access-btn {
+  background: linear-gradient(135deg, #ff6d00, #ff9100); /* Neon Orange Gradient */
+  color: #fff;
+  border: none;
+  padding: 16px 45px;
+  font-size: 1.2rem;
+  font-weight: 650;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(255, 109, 0, 0.6); /* Glowing Orange Shadow */
+  position: relative;
+  overflow: hidden;
+}
+
+.access-btn:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 0 30px rgba(255, 109, 0, 0.9);
+  background: linear-gradient(135deg, #ff9100, #ff6d00);
+}
+
+/* Illustration Area */
+.access-illustration {
+  flex: 1;
+  position: relative;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Island SVG (positioned absolute bottom right of this section area) */
+.island-svg {
+  position: absolute;
+  bottom: -40px; /* Align with waves */
+  right: -50px;
+  width: 500px;
+  height: auto;
+  z-index: 1;
+}
+
+/* Rocket Wrapper */
+.rocket-wrapper {
+  position: absolute;
+  top: 0;
+  right: 50px;
+  width: 150px;
+  height: 150px;
+  z-index: 2;
+  animation: rocketFly 6s ease-in-out infinite;
+}
+
+.rocket-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(30deg);
+}
+
+.rocket-flame {
+  animation: flicker 0.6s infinite alternate;
+}
+
+@keyframes rocketFly {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-20px) translateX(-10px); }
+}
+
+@keyframes flicker {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0.8; transform: scale(0.9); }
+}
+
+/* Waves Decoration */
+.waves {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  line-height: 0;
+  z-index: 2; /* Cover bottom of island */
+}
+
+.wave-svg {
+  position: relative;
+  display: block;
+  width: calc(100% + 1.3px);
+  height: 120px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 900px) {
+  .access-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .access-content {
+    text-align: center;
+    padding-left: 0;
+    margin-bottom: 40px;
+    margin-top: 40px;
+  }
+
+  .island-svg {
+    right: 50%;
+    transform: translateX(50%);
+    width: 350px;
+  }
+  
+  .rocket-wrapper {
+    right: 50%;
+    margin-right: -75px; /* Center it */
+    top: -20px;
+  }
+  
+  .access-illustration {
+    width: 100%;
+    height: 250px;
+  }
+}

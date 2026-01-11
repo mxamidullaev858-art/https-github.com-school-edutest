@@ -1,0 +1,15 @@
+# node_modules
+node_modules/
+.DS_Store
+dist/
+dist-ssr/
+*.local
+
+# Environment variables
+.env
+.env.production
+.env.local
+
+# Backend Data
+server/users.json
+server/node_modules/
