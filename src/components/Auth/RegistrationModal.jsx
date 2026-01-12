@@ -1,3 +1,7 @@
+import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import './RegistrationModal.css';
+
 const RegistrationModal = ({ onClose }) => {
   const { googleAccount, loginWithGoogle, register } = useAuth();
   const [step, setStep] = useState(googleAccount ? 2 : 1);
