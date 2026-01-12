@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { toast } from 'react-toastify';
 import './RegistrationModal.css';
 
 const RegistrationModal = ({ onClose }) => {
@@ -17,19 +18,33 @@ const RegistrationModal = ({ onClose }) => {
 
   const handleGoogleSubmit = async (e) => {
     e.preventDefault();
-    if (googleEmail.includes('@') && googlePassword.length >= 4) {
-      setIsLoading(true);
-      const found = await loginWithGoogle(googleEmail, googlePassword);
-      setIsLoading(false);
-      
-      if (found === false) {
-        // Not found, proceed to registration step
-        setStep(2);
-      } else if (found === true) {
-        // Success
-        onClose();
-      }
-      // If null (error), stay on Step 1
+    
+    // Client-side validation
+    if (!googleEmail.includes('@')) {
+      toast.error('Email manzilini togri kiriting!');
+      return;
+    }
+    
+    if (googlePassword.length < 4) {
+      toast.error('Parol kamida 4 ta belgidan iborat bolishi kerak!');
+      return;
+    }
+    
+    setIsLoading(true);
+    const loginResult = await loginWithGoogle(googleEmail, googlePassword);
+    setIsLoading(false);
+    
+    // STRICT VALIDATION: Only proceed if login is explicitly successful
+    if (loginResult === true) {
+      // SUCCESS: User authenticated, close modal and allow access
+      onClose();
+    } else if (loginResult === false) {
+      // NOT FOUND: User doesn't exist, allow registration
+      setStep(2);
+    } else {
+      // ERROR (null): Wrong password or server error
+      // Modal stays open, user cannot access the site
+      // Error message already shown by AuthContext via toast
     }
   };
 
