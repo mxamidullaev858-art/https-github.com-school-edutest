@@ -4,11 +4,8 @@ import { toast } from 'react-toastify';
 import './RegistrationModal.css';
 
 const RegistrationModal = ({ onClose }) => {
-  const { googleAccount, loginWithGoogle, register } = useAuth();
-  const [step, setStep] = useState(googleAccount ? 2 : 1);
-  const [googleEmail, setGoogleEmail] = useState('');
-  const [googlePassword, setGooglePassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const { user, loginWithGoogle, register, loading } = useAuth();
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -16,44 +13,30 @@ const RegistrationModal = ({ onClose }) => {
     birthDate: ''
   });
 
-  const handleGoogleSubmit = async (e) => {
-    e.preventDefault();
-    
-    // Client-side validation
-    if (!googleEmail.includes('@')) {
-      toast.error('Email manzilini togri kiriting!');
-      return;
+  // If user is already logged in via Google but hasn't completed profile
+  useEffect(() => {
+    if (user && (!user.firstName || !user.lastName)) {
+      setStep(2); // Go to profile completion
     }
-    
-    if (googlePassword.length < 4) {
-      toast.error('Parol kamida 4 ta belgidan iborat bolishi kerak!');
-      return;
-    }
-    
-    setIsLoading(true);
-    const loginResult = await loginWithGoogle(googleEmail, googlePassword);
-    setIsLoading(false);
-    
-    // STRICT VALIDATION: Only proceed if login is explicitly successful
-    if (loginResult === true) {
-      // SUCCESS: User authenticated, close modal and allow access
-      onClose();
-    } else if (loginResult === false) {
-      // NOT FOUND: User doesn't exist, allow registration
-      setStep(2);
-    } else {
-      // ERROR (null): Wrong password or server error
-      // Modal stays open, user cannot access the site
-      // Error message already shown by AuthContext via toast
+  }, [user]);
+
+  const handleGoogleSignIn = async () => {
+    const success = await loginWithGoogle();
+    if (success) {
+      // Check if user needs to complete profile
+      // If not, close modal
+      if (user?.firstName && user?.lastName) {
+        onClose();
+      } else {
+        setStep(2);
+      }
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.firstName && formData.lastName && formData.school && formData.birthDate) {
-      setIsLoading(true);
       const success = await register(formData);
-      setIsLoading(false);
       if (success) {
         onClose();
       }
@@ -68,40 +51,26 @@ const RegistrationModal = ({ onClose }) => {
         {step === 1 ? (
           <>
             <h2>Kirish</h2>
-            <p>Davom etish uchun Google hisobingizni kiriting</p>
-            <form onSubmit={handleGoogleSubmit}>
-              <div className="form-group">
-                <label>Google Email</label>
-                <div className="google-input-wrapper">
-                  <span className="google-icon-small">G</span>
-                  <input 
-                    type="email" 
-                    placeholder="example@gmail.com"
-                    value={googleEmail}
-                    onChange={(e) => setGoogleEmail(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="form-group">
-                <label>Parol</label>
-                <input 
-                  type="password" 
-                  placeholder="&bull;&bull;&bull;&bull;&bull;&bull;"
-                  value={googlePassword}
-                  onChange={(e) => setGooglePassword(e.target.value)}
-                  required
-                />
-              </div>
-              <button type="submit" className="submit-btn google-btn" disabled={isLoading}>
-                <span className="google-logo">G</span> {isLoading ? 'Yuklanmoqda...' : 'Google bilan davom etish'}
-              </button>
-            </form>
+            <p>Google akkauntingiz orqali davom eting</p>
+            
+            <button 
+              onClick={handleGoogleSignIn} 
+              className="submit-btn google-btn" 
+              disabled={loading}
+              type="button"
+            >
+              <span className="google-logo">G</span> 
+              {loading ? 'Yuklanmoqda...' : 'Google bilan kirish'}
+            </button>
+            
+            <p style={{ marginTop: '20px', fontSize: '0.85rem', color: '#888' }}>
+              Google orqali kirishingiz bilan siz shaxsiy ma'lumotlaringizni ulashishga rozilik bildirasiz
+            </p>
           </>
         ) : (
           <>
             <h2>Profilni toldiring</h2>
-            <p>{googleAccount?.email || 'Yangi profil'} orqali royxatdan otasiz</p>
+            <p>{user?.email || 'Google akkaunt'} orqali royxatdan otasiz</p>
             <form onSubmit={handleSubmit}>
               <div className="form-group-row">
                 <div className="form-group">
